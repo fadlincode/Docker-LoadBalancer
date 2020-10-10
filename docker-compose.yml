@@ -61,6 +61,15 @@ services:
             dc-network:
                 ipv4_address: 172.18.2.13
     
+    #LoadBalancer
+    haproxy:
+        build: ./haproxy
+        container_name: haproxy
+        ports:
+            - "80:80"
+        networks:
+            dc-network:
+                ipv4_address: 172.18.2.15
     
 
 networks: 
