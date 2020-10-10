@@ -1,0 +1,72 @@
+version: "3"
+services:
+   
+    #Server A
+    nginx1:
+        image: tutum/nginx
+        container_name: server_A
+        ports:
+            - "81:80"
+        links:
+            - phpfpm1
+        volumes:
+            - ./nginx/default_server_a:/etc/nginx/sites-available/default
+            - ./nginx/default_server_a:/etc/nginx/sites-enabled/default
+
+            - ./logs/serverError.log:/var/log/nginx/error.log
+            - ./logs/serverAccess.log:/var/log/nginx/access.log
+        networks:
+            dc-network:
+                ipv4_address: 172.18.2.10
+
+    phpfpm1:
+        image: php:fpm
+        container_name: php_a
+        ports:
+            - "9001:9000"
+        volumes:
+            - ./web/beta_a:/usr/share/nginx/html
+        networks:
+            dc-network:
+                ipv4_address: 172.18.2.11
+
+
+
+    #Server B
+    nginx2:
+        image: tutum/nginx
+        container_name: server_B
+        ports:
+            - "82:80"
+        links:
+            - phpfpm2
+        volumes:
+            - ./nginx/default_server_b:/etc/nginx/sites-available/default
+            - ./nginx/default_server_b:/etc/nginx/sites-enabled/default
+
+            - ./logs/serverError.log:/var/log/nginx/error.log
+            - ./logs/serverAccess.log:/var/log/nginx/access.log
+        networks:
+            dc-network:
+                ipv4_address: 172.18.2.12
+
+    phpfpm2:
+        image: php:fpm
+        container_name: php_b
+        ports:
+            - "9002:9000"
+        volumes:
+            - ./web/beta_b:/usr/share/nginx/html
+        networks:
+            dc-network:
+                ipv4_address: 172.18.2.13
+    
+    
+
+networks: 
+    dc-network:
+        driver: bridge
+        ipam: 
+            driver: default
+            config: 
+                - subnet: 172.18.2.0/24
