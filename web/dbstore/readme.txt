@@ -1,1 +1,0 @@
-Data from mysql container will be in this drectory
